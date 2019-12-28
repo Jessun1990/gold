@@ -1,3 +1,3 @@
-module github.com/Jessun1990/tools.go
+module github.com/Jessun1990/gold
 
 go 1.14
