@@ -25,6 +25,7 @@ func GetSha1ViaPath(filePath string) (sha1Str string, err error) {
 }
 
 func GetSha1ViaFile(file *os.File) (sha1Str string, err error) {
+	file.Seek(0, 0)
 	hash := sha1.New()
 	if _, err := io.Copy(hash, file); err != nil {
 		return sha1Str, err
