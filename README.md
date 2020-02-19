@@ -1,3 +1,2 @@
 # gold
-My go-utils collection
-Null
+My golang functions collection
