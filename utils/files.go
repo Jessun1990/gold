@@ -7,6 +7,7 @@ import (
 	"os"
 )
 
+// GetSha1ViaPath 通过文件路径 filePath 来获取文件的 sha1
 func GetSha1ViaPath(filePath string) (sha1Str string, err error) {
 	file, err := os.Open(filePath)
 	if err != nil {
@@ -24,6 +25,7 @@ func GetSha1ViaPath(filePath string) (sha1Str string, err error) {
 	return
 }
 
+// GetSha1ViaFile 通过文件对象 file 来获取文件的 sha1
 func GetSha1ViaFile(file *os.File) (sha1Str string, err error) {
 	file.Seek(0, 0)
 	hash := sha1.New()
