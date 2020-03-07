@@ -15,19 +15,17 @@ import (
 	"github.com/jessun2017/gold/constant"
 )
 
-var serName string
-
-type LoggerSet struct {
+type Config struct {
 	Hook    lumberjack.Logger
 	ZapCore zapcore.Core
 	Level   zapcore.Level
 }
 
 // LoggerPreset 默认设置
-var LoggerPreset = LoggerSet{
+var LoggerPreset = Config{
 	Hook: lumberjack.Logger{
 		// 默认日志文件位置，当前目录下的 logs 目录
-		Filename: "/tmp/" + serName + "/" + time.Now().Format(constant.TimeLogFmt) + ".log",
+		Filename: "/tmp/" + time.Now().Format(constant.TimeLogFmt) + ".log",
 		// 单个文件最大尺寸，单位 MB
 		MaxSize: 256,
 		// 日志文件最多保存多少个备份
@@ -40,12 +38,14 @@ var LoggerPreset = LoggerSet{
 	Level: zapcore.InfoLevel,
 }
 
-func NewLogger(serviceName string) *zap.Logger {
-	serName = serviceName
+func NewLogger(serviceName string, set *Config) *zap.Logger {
+	if set == nil {
+		set = &LoggerPreset
+	}
 
 	// 设置日志级别
 	atomicLevel := zap.NewAtomicLevel()
-	atomicLevel.SetLevel(LoggerPreset.Level)
+	atomicLevel.SetLevel(set.Level)
 	//公用编码器
 	encoderConfig := zapcore.EncoderConfig{
 		TimeKey:        "time",
@@ -62,8 +62,8 @@ func NewLogger(serviceName string) *zap.Logger {
 		EncodeName:     zapcore.FullNameEncoder,
 	}
 	LoggerPreset.ZapCore = zapcore.NewCore(
-		zapcore.NewJSONEncoder(encoderConfig),                                                        // 编码器配置
-		zapcore.NewMultiWriteSyncer(zapcore.AddSync(os.Stdout), zapcore.AddSync(&LoggerPreset.Hook)), // 打印到控制台和文件
+		zapcore.NewJSONEncoder(encoderConfig),                                               // 编码器配置
+		zapcore.NewMultiWriteSyncer(zapcore.AddSync(os.Stdout), zapcore.AddSync(&set.Hook)), // 打印到控制台和文件
 		atomicLevel, // 日志级别
 	)
 
