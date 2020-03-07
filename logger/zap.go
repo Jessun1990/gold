@@ -67,8 +67,6 @@ func NewLogger(serviceName string) *zap.Logger {
 		atomicLevel, // 日志级别
 	)
 
-	return zap.New(LoggerPreset.ZapCore,
-		zap.AddCaller(),
-		zap.Development(),
+	return zap.New(LoggerPreset.ZapCore, zap.AddCaller(), zap.Development(),
 		zap.Fields(zap.String("ServiceName", LoggerPreset.ServiceName)))
 }
