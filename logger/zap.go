@@ -39,8 +39,10 @@ var LoggerPreset = Config{
 }
 
 func NewLogger(serviceName string, set *Config) *zap.Logger {
-	if set == nil {
+	if set == nil { // 使用默认设置 LoggerPreset
 		set = &LoggerPreset
+		set.Hook.Filename = "/tmp/" + serviceName + "/" +
+			time.Now().Format(constant.TimeLogFmt) + ".log"
 	}
 
 	// 设置日志级别
