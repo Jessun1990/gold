@@ -62,7 +62,7 @@ func NewLogger(serviceName string) *zap.Logger {
 		EncodeName:     zapcore.FullNameEncoder,
 	}
 	LoggerPreset.ZapCore = zapcore.NewCore(
-		zapcore.NewConsoleEncoder(encoderConfig),                                                     // 编码器配置
+		zapcore.NewJSONEncoder(encoderConfig),                                                        // 编码器配置
 		zapcore.NewMultiWriteSyncer(zapcore.AddSync(os.Stdout), zapcore.AddSync(&LoggerPreset.Hook)), // 打印到控制台和文件
 		atomicLevel, // 日志级别
 	)
