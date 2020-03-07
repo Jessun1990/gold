@@ -15,15 +15,15 @@ import (
 	"github.com/jessun2017/gold/constant"
 )
 
+// Config 日志设置的二次封装
 type Config struct {
-	Hook    lumberjack.Logger
-	ZapCore zapcore.Core
-	Level   zapcore.Level
+	FileConfig     lumberjack.Logger
+	LogLevelConfig zapcore.Level
 }
 
 // LoggerPreset 默认设置
 var LoggerPreset = Config{
-	Hook: lumberjack.Logger{
+	FileConfig: lumberjack.Logger{
 		// 默认日志文件位置，当前目录下的 logs 目录
 		Filename: "/tmp/" + time.Now().Format(constant.TimeLogFmt) + ".log",
 		// 单个文件最大尺寸，单位 MB
@@ -35,25 +35,25 @@ var LoggerPreset = Config{
 		// 是否压缩
 		Compress: true,
 	},
-	Level: zapcore.InfoLevel,
+	LogLevelConfig: zapcore.InfoLevel,
 }
 
 func NewLogger(serviceName string, set *Config) *zap.Logger {
 	if set == nil { // 使用默认设置 LoggerPreset
 		set = &LoggerPreset
-		set.Hook.Filename = "/tmp/" + serviceName + "/" +
+		set.FileConfig.Filename = "/tmp/" + serviceName + "/" +
 			time.Now().Format(constant.TimeLogFmt) + ".log"
 	}
 
 	// 设置日志级别
 	atomicLevel := zap.NewAtomicLevel()
-	atomicLevel.SetLevel(set.Level)
+	atomicLevel.SetLevel(set.LogLevelConfig)
 	//公用编码器
 	encoderConfig := zapcore.EncoderConfig{
 		TimeKey:        "time",
 		LevelKey:       "level",
 		NameKey:        "logger",
-		CallerKey:      "linenum",
+		CallerKey:      "LN",
 		MessageKey:     "msg",
 		StacktraceKey:  "stacktrace",
 		LineEnding:     zapcore.DefaultLineEnding,
@@ -63,12 +63,14 @@ func NewLogger(serviceName string, set *Config) *zap.Logger {
 		EncodeCaller:   zapcore.FullCallerEncoder,      // 全路径编码器
 		EncodeName:     zapcore.FullNameEncoder,
 	}
-	LoggerPreset.ZapCore = zapcore.NewCore(
-		zapcore.NewJSONEncoder(encoderConfig),                                               // 编码器配置
-		zapcore.NewMultiWriteSyncer(zapcore.AddSync(os.Stdout), zapcore.AddSync(&set.Hook)), // 打印到控制台和文件
+	core := zapcore.NewCore(
+		zapcore.NewJSONEncoder(encoderConfig), // 编码器配置
+		zapcore.NewMultiWriteSyncer(
+			zapcore.AddSync(os.Stdout),
+			zapcore.AddSync(&set.FileConfig),
+		), // 打印到控制台和文件
 		atomicLevel, // 日志级别
 	)
-
-	return zap.New(LoggerPreset.ZapCore, zap.AddCaller(), zap.Development(),
+	return zap.New(core, zap.AddCaller(), zap.Development(),
 		zap.Fields(zap.String("ServiceName", serviceName)))
 }
