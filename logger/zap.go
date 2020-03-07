@@ -15,18 +15,19 @@ import (
 	"github.com/jessun2017/gold/constant"
 )
 
+var serName string
+
 type LoggerSet struct {
-	Hook        lumberjack.Logger
-	ZapCore     zapcore.Core
-	Level       zapcore.Level
-	ServiceName string
+	Hook    lumberjack.Logger
+	ZapCore zapcore.Core
+	Level   zapcore.Level
 }
 
 // LoggerPreset 默认设置
 var LoggerPreset = LoggerSet{
 	Hook: lumberjack.Logger{
 		// 默认日志文件位置，当前目录下的 logs 目录
-		Filename: "./logs/" + time.Now().Format(constant.TimeLogFmt) + ".log",
+		Filename: "/tmp/" + serName + "/" + time.Now().Format(constant.TimeLogFmt) + ".log",
 		// 单个文件最大尺寸，单位 MB
 		MaxSize: 256,
 		// 日志文件最多保存多少个备份
@@ -36,12 +37,11 @@ var LoggerPreset = LoggerSet{
 		// 是否压缩
 		Compress: true,
 	},
-	Level:       zapcore.InfoLevel,
-	ServiceName: "unknown service name",
+	Level: zapcore.InfoLevel,
 }
 
 func NewLogger(serviceName string) *zap.Logger {
-	LoggerPreset.ServiceName = serviceName
+	serName = serviceName
 
 	// 设置日志级别
 	atomicLevel := zap.NewAtomicLevel()
@@ -68,5 +68,5 @@ func NewLogger(serviceName string) *zap.Logger {
 	)
 
 	return zap.New(LoggerPreset.ZapCore, zap.AddCaller(), zap.Development(),
-		zap.Fields(zap.String("ServiceName", LoggerPreset.ServiceName)))
+		zap.Fields(zap.String("ServiceName", serviceName)))
 }
