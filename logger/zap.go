@@ -55,10 +55,10 @@ func NewLogger(serviceName string) *zap.Logger {
 		MessageKey:     "msg",
 		StacktraceKey:  "stacktrace",
 		LineEnding:     zapcore.DefaultLineEnding,
-		EncodeLevel:    zapcore.CapitalColorLevelEncoder, // 编码器
-		EncodeTime:     zapcore.ISO8601TimeEncoder,       // ISO8601 UTC 时间格式
-		EncodeDuration: zapcore.SecondsDurationEncoder,   //
-		EncodeCaller:   zapcore.FullCallerEncoder,        // 全路径编码器
+		EncodeLevel:    zapcore.LowercaseLevelEncoder,  // 编码器
+		EncodeTime:     zapcore.ISO8601TimeEncoder,     // ISO8601 UTC 时间格式
+		EncodeDuration: zapcore.SecondsDurationEncoder, //
+		EncodeCaller:   zapcore.FullCallerEncoder,      // 全路径编码器
 		EncodeName:     zapcore.FullNameEncoder,
 	}
 	LoggerPreset.ZapCore = zapcore.NewCore(
