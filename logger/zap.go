@@ -15,6 +15,8 @@ import (
 	"github.com/jessun2017/gold/constant"
 )
 
+type Logger = zap.Logger
+
 // Config 日志设置的二次封装
 type Config struct {
 	FileConfig     lumberjack.Logger
