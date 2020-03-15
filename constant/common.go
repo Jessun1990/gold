@@ -1,7 +1,7 @@
 package constant
 
 /*
-	How to import
+How to import
 *****************
 import "github.com/jessun2017/gold/constant"
 ...
