@@ -1,7 +1,17 @@
 package logger
 
 /*
-	zap logger 的二次封装
+对 zap logger 的二次封装
+*****************
+import "github.com/jessun2017/gold/logger"
+...
+var l *logger.Logger
+
+func init() {
+	l = logger.NewLogger("servername", nil)
+}
+
+*****************
 */
 
 import (
