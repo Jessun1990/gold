@@ -25,6 +25,7 @@ import (
 	"github.com/jessun2017/gold/constant"
 )
 
+// Logger 设置格式别名
 type Logger = zap.Logger
 
 // Config 日志设置的二次封装
@@ -50,6 +51,7 @@ var LoggerPreset = Config{
 	LogLevelConfig: zapcore.InfoLevel,
 }
 
+// NewLogger 创建新的 Logger 对象，默认存储位置在 /tmp/[serviceName]/ 下
 func NewLogger(serviceName string, set *Config) *zap.Logger {
 	if set == nil { // 使用默认设置 LoggerPreset
 		set = &LoggerPreset
@@ -65,7 +67,7 @@ func NewLogger(serviceName string, set *Config) *zap.Logger {
 		TimeKey:        "time",
 		LevelKey:       "level",
 		NameKey:        "logger",
-		CallerKey:      "LN",
+		CallerKey:      "lineNum",
 		MessageKey:     "msg",
 		StacktraceKey:  "stacktrace",
 		LineEnding:     zapcore.DefaultLineEnding,
