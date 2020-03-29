@@ -28,6 +28,9 @@ import (
 // Logger 设置格式别名
 type Logger = zap.Logger
 
+// SugaredLogger 格式别名
+type SugaredLogger = zap.SugaredLogger
+
 // Config 日志设置的二次封装
 type Config struct {
 	FileConfig     lumberjack.Logger
